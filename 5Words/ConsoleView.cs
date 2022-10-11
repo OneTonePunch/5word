@@ -11,11 +11,13 @@ namespace _5Words
         private string _lineString = "**********************************************";
         public void ProgramStart()
         {
+            Console.WriteLine(_lineString);
             Console.WriteLine("Программа 5Слов запущена");            
         }
 
         public int GetWordLength()
         {
+            Console.WriteLine(_lineString);
             Console.WriteLine("Введите длинну искомого слова");
             var result = Convert.ToInt32(Console.ReadLine());
             return result;
@@ -26,11 +28,11 @@ namespace _5Words
             Console.WriteLine(_lineString);
             Console.WriteLine($"Хранилище содержит {wordsByCount} слов длиной {charCount}");
             Console.WriteLine($"Хранилище содержит {wordsNonRepeatLetters} слов длиной {charCount} с неповторяющимися буквами");
-            Console.WriteLine(_lineString);
         }
 
         public void ShowMenu()
         {
+            Console.WriteLine(_lineString);
             Console.WriteLine("Введите команду");
             Console.WriteLine("1) Выдать рандомное слово с неповторяющимися буквами");
             Console.WriteLine("2) Получить слова содержащие буквы");
@@ -55,12 +57,12 @@ namespace _5Words
             if (!string.IsNullOrEmpty(description))
                 Console.WriteLine(description);
 
+            var index = 1;
             foreach (var word in words)
             {
-                Console.WriteLine(word);
+                Console.WriteLine($"{index}){word}");
+                index++;
             }
-
-            Console.WriteLine(_lineString);
 
             if (needPause) 
                 Console.ReadLine();
