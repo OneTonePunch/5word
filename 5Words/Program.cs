@@ -17,9 +17,18 @@ namespace MyApp
                 var message = update.Message;
                 if (message.Text.ToLower() == "/start")
                 {
-                    await botClient.SendTextMessageAsync(message.Chat, "Добро пожаловать в поиск слов!");
+                    await botClient.SendTextMessageAsync(message.Chat, "Добро пожаловать в поиск слов! А точнее русских существительных по фильтрам.");
                     await botClient.SendTextMessageAsync(message.Chat, "Пример поиска:");
-                    await botClient.SendTextMessageAsync(message.Chat, "/find {length:\"5\", contains:\"abc\", noncontains:\"fgh\", template:\"__aew\", antitemplate:\"mw__t\"};");
+                    await botClient.SendTextMessageAsync(message.Chat, "/find {length:\"5\", contains:\"абз\", noncontains:\"совикх\", template:\"аб_а_\", antitemplate:\"__б_з\"}");
+                    await botClient.SendTextMessageAsync(message.Chat, "Где:");
+                    await botClient.SendTextMessageAsync(message.Chat, "length - длина слова (пример 5)");
+                    await botClient.SendTextMessageAsync(message.Chat, "contains - символы, которые должны содержаться в слове (пример абз)");
+                    await botClient.SendTextMessageAsync(message.Chat, "noncontains - символы, которые НЕ должны содержаться в слове (пример совикх)");
+                    await botClient.SendTextMessageAsync(message.Chat, @"template - шаблон, в котором укзаны точные положения букв. _ - неизвестная буква. 
+                    Пример: аб_а_. Точное положение буквы а - 1 и 4, б - 2. остальные буквы нам не известны");
+
+                    await botClient.SendTextMessageAsync(message.Chat, @"antitemplate - шаблон, в котором укзаны положения букв которые не должны быть на этом месте но присутствуют в слове. _ - неизвестная буква. 
+                    Пример: __б_з.");
                     return;
                 }
                 else if (message.Text.ToLower().Contains("/find"))
@@ -36,10 +45,10 @@ namespace MyApp
                             EnableByTemplate = string.IsNullOrEmpty(findMessage.Template) ? false : true,
                             EnableContains = string.IsNullOrEmpty(findMessage.Contains) ? false : true,
                             EnableNonContains = string.IsNullOrEmpty(findMessage.NonContains) ? false : true,
-                            AntiTemplate = findMessage.AntiTemplate,
-                            Template = findMessage.Template,
-                            Contains = findMessage.Contains,
-                            NonContains = findMessage.NonContains
+                            AntiTemplate = findMessage.AntiTemplate?.ToLower(),
+                            Template = findMessage.Template?.ToLower(),
+                            Contains = findMessage.Contains?.ToLower(),
+                            NonContains = findMessage.NonContains?.ToLower()
                         };
                         var result = wstorage.Filtrate(filter);
                         if (result == null || result.Count == 0)
