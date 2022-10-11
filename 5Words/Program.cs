@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using Telegram.Bot;
 using Telegram.Bot.Extensions.Polling;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
 namespace MyApp
 {
@@ -12,9 +13,12 @@ namespace MyApp
         public static async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
             Console.WriteLine(JsonConvert.SerializeObject(update));
-            if (update.Type == Telegram.Bot.Types.Enums.UpdateType.Message)
+            if (update.Type == UpdateType.Message)
             {
                 var message = update.Message;
+                var messageText = message.Text;
+                var chatId = update.Message.Chat.Id;
+                var userName = update.Message.Chat.Username;
                 if (message.Text.ToLower() == "/start")
                 {
                     await BotUtility.SendHi(botClient, message);
@@ -38,6 +42,7 @@ namespace MyApp
                     return;
                 }
                 await botClient.SendTextMessageAsync(message.Chat, "Привет-привет!!");
+                
             }
         }
 
@@ -55,7 +60,12 @@ namespace MyApp
             var cancellationToken = cts.Token;
             var receiverOptions = new ReceiverOptions
             {
-                AllowedUpdates = { },
+                AllowedUpdates = new UpdateType[] 
+                {
+                    UpdateType.Message,
+                    UpdateType.EditedMessage
+                }
+                    
             };
             bot.StartReceiving(
                 HandleUpdateAsync,

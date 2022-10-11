@@ -19,7 +19,7 @@ namespace _5Words
         public static async Task SendHelp(ITelegramBotClient botClient, Message message)
         {
             await botClient.SendTextMessageAsync(message.Chat, "Пример поиска:");
-            await botClient.SendTextMessageAsync(message.Chat, "/find {length:\"5\", contains:\"абз\", noncontains:\"совикх\", template:\"аб_а_\", antitemplate:\"__б_з\"}");
+            await botClient.SendTextMessageAsync(message.Chat, "/find length=5;contains=абз;noncontains=совикх; template=аб_а_;antitemplate=__б_з");
             await botClient.SendTextMessageAsync(message.Chat, "Где:");
             await botClient.SendTextMessageAsync(message.Chat, "length - длина слова (пример 5)");
             await botClient.SendTextMessageAsync(message.Chat, "contains - символы, которые должны содержаться в слове (пример абз)");
@@ -37,7 +37,7 @@ namespace _5Words
             try
             {
                 var jsonText = message.Text.ToLower().Replace("/find", "").Trim();
-                var findMessage = JsonConvert.DeserializeObject<FindMessage>(jsonText);
+                var findMessage = ParseFindMessage(jsonText);//JsonConvert.DeserializeObject<FindMessage>(jsonText);
 
                 var wstorage = new WordsStorage(findMessage.Length, "russian_nouns.txt");
                 var filter = new Filter
@@ -59,7 +59,7 @@ namespace _5Words
                 }
                 else
                 {
-                    var responseText = string.Concat(result.Select(x => $"{x}{Environment.NewLine}"));
+                    var responseText = string.Concat(result.Select(x => $"{result.IndexOf(x)+1}]{x}{Environment.NewLine}"));
                     await botClient.SendTextMessageAsync(message.Chat, responseText);
                     return;
                 }
@@ -76,7 +76,7 @@ namespace _5Words
             try
             {
                 var jsonText = message.Text.ToLower().Replace("/rnd", "").Trim();
-                var findMessage = JsonConvert.DeserializeObject<RandomMessage>(jsonText);
+                var findMessage = ParseRandomMessage(jsonText);//JsonConvert.DeserializeObject<RandomMessage>(jsonText);
 
                 var wstorage = new WordsStorage(findMessage.Length, "russian_nouns.txt");
                 var nonRepeatLetters = wstorage.FindNonReapeatingLettersWords();
@@ -99,6 +99,74 @@ namespace _5Words
                 await botClient.SendTextMessageAsync(message.Chat, "Упс... не удалось распознать вашу комманду");
                 return;
             }
+        }
+    
+        private static Dictionary<string, string> ParseMessage(string message)
+        {
+            if (string.IsNullOrEmpty(message))
+                return new Dictionary<string, string>();
+
+            var splited = message.Split(';', StringSplitOptions.RemoveEmptyEntries);
+            var result = new Dictionary<string, string>();
+            foreach (var item in splited)
+            {
+                var sp = item.Split('=');
+                if (sp.Length==2)
+                {
+                    result.Add(sp[0].Trim().ToLower(), sp[1].Trim().ToLower());
+                }
+            }
+
+            return result;
+        }
+    
+        private static RandomMessage ParseRandomMessage(string message)
+        {
+            var splitted = ParseMessage(message);
+            if (splitted!=null&&splitted.Count>0)
+            {
+                var result = new RandomMessage();
+                if (splitted.TryGetValue("length", out string lengthString)&&Int32.TryParse(lengthString, out int length))
+                {
+                    result.Length = length;
+                    return result;
+                }
+            }
+
+            return null;
+        }
+
+        private static FindMessage ParseFindMessage(string message)
+        {
+            var splitted = ParseMessage(message);
+            if (splitted!=null&&splitted.Count>0)
+            {
+                var result = new FindMessage();
+                if (splitted.TryGetValue("length", out string lengthString)&&Int32.TryParse(lengthString, out int length))
+                {
+                    result.Length = length;
+                }
+                if (splitted.TryGetValue("contains", out string contains)&&!string.IsNullOrEmpty(contains))
+                {
+                    result.Contains = contains;
+                }
+                if (splitted.TryGetValue("noncontains", out string noncontains)&&!string.IsNullOrEmpty(noncontains))
+                {
+                    result.NonContains = noncontains;
+                }
+                if (splitted.TryGetValue("template", out string template)&&!string.IsNullOrEmpty(template))
+                {
+                    result.Template = template;
+                }
+                if (splitted.TryGetValue("antitemplate", out string antitemplate)&&!string.IsNullOrEmpty(antitemplate))
+                {
+                    result.AntiTemplate = antitemplate;
+                }
+
+                return result;
+            }
+
+            return null;
         }
     }
 }
