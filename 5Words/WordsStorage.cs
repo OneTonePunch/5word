@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace _5Words
 {
     public class WordsStorage
     {
-        public WordsStorage(int charCount)
+        public WordsStorage(int charCount, string fileName)
         {
             CharCount = charCount;
             Storage = FilterWordsLength(charCount, ReadFile());
+            FileName = fileName;
         }
         private int CharCount { get; set; }
         public string FileName { get; set; } = "russian_nouns.txt";

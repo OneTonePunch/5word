@@ -1,6 +1,4 @@
 ﻿using _5Words;
-using System;
-using System.Runtime.InteropServices;
 
 namespace MyApp
 {
@@ -9,12 +7,10 @@ namespace MyApp
         static void Main(string[] args)
         {
             var consoleView = new ConsoleView();
-            Random rnd = new Random();
-
             consoleView.ProgramStart();
             var charCount = consoleView.GetWordLength();
 
-            var wstorage = new WordsStorage(charCount);
+            var wstorage = new WordsStorage(charCount, "russian_nouns.txt");
             var nonRepeatLetters = wstorage.FindNonReapeatingLettersWords();
             consoleView.StorageInfo(charCount, wstorage.Storage.Count, nonRepeatLetters.Count);
             var commandObject = new Command(wstorage);
