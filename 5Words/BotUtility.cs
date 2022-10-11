@@ -11,6 +11,7 @@ namespace _5Words
 {
     public static class BotUtility
     {
+        private static Random _random = new Random();
         public static async Task SendHi(ITelegramBotClient botClient, Message message)
         {
             await botClient.SendTextMessageAsync(message.Chat, "Добро пожаловать в поиск слов! А точнее русских существительных по фильтрам.");
@@ -51,6 +52,36 @@ namespace _5Words
                     NonContains = findMessage.NonContains?.ToLower()
                 };
                 var result = wstorage.Filtrate(filter);
+                if (result == null || result.Count == 0)
+                {
+                    await botClient.SendTextMessageAsync(message.Chat, "Поиск не смог найти подходящего слова... Попробуйте с другими параметрами");
+                    return;
+                }
+                else
+                {
+                    var responseText = string.Concat(result.Select(x => $"{x}{Environment.NewLine}"));
+                    await botClient.SendTextMessageAsync(message.Chat, responseText);
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                await botClient.SendTextMessageAsync(message.Chat, "Упс... не удалось распознать вашу комманду");
+                return;
+            }
+        }
+
+        public static async Task SendRandom(ITelegramBotClient botClient, Message message)
+        {
+            try
+            {
+                var jsonText = message.Text.ToLower().Replace("/rnd", "").Trim();
+                var findMessage = JsonConvert.DeserializeObject<RandomMessage>(jsonText);
+
+                var wstorage = new WordsStorage(findMessage.Length, "russian_nouns.txt");
+                var nonRepeatLetters = wstorage.FindNonReapeatingLettersWords();
+                int randomIndex = _random.Next(0, nonRepeatLetters.Count - 1);
+                var result = new List<string> { nonRepeatLetters[randomIndex] };
                 if (result == null || result.Count == 0)
                 {
                     await botClient.SendTextMessageAsync(message.Chat, "Поиск не смог найти подходящего слова... Попробуйте с другими параметрами");

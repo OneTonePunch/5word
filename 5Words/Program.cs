@@ -32,6 +32,11 @@ namespace MyApp
                     await BotUtility.SendHelp(botClient, message);
                     return;
                 }
+                else if (message.Text.ToLower().StartsWith("/rnd"))
+                {
+                    await BotUtility.SendRandom(botClient, message);
+                    return;
+                }
                 await botClient.SendTextMessageAsync(message.Chat, "Привет-привет!!");
             }
         }
