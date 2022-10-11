@@ -1,0 +1,13 @@
+﻿name of bot = WordsFinderRus
+username of bot = FindRusWordsBot
+t.me/FindRusWordsBot
+
+
+Use this token to access the HTTP API:
+5738281587:AAGr5g-dWjzpq4BhC-EP8LKsXuK4qUgOcLk
+Keep your token secure and store it safely, it can be used by anyone to control your bot.
+
+https://core.telegram.org/bots/api
+
+
+/find {length:"5", contains:"abc", noncontains:"fgh", template:"__aew", antitemplate:"mw__t"}
