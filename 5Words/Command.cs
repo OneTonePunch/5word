@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace _5Words
+﻿namespace _5Words
 {
     public class Command
     {
@@ -32,6 +26,8 @@ namespace _5Words
             else if (n == 6)
                 ContainsAndNonContainsCharsAndTemplate();
             else if (n == 7)
+                ContainsAndNonContainsCharsAndTemplateAndAntiTemplate();
+            else if (n == 8)
                 Clear();
 
         }
@@ -46,7 +42,14 @@ namespace _5Words
 
             Console.WriteLine("Введите буквы которые должно содержать слово(пример:абе)");
             var chars = Console.ReadLine();
-            var wordsByChars = _storage.FindWordsByChars(chars);
+
+            var filter = new Filter
+            {
+                EnableContains = true,
+                Contains = chars
+            };
+        
+            var wordsByChars = _storage.Filtrate(filter);
             if (wordsByChars.Count == 0)
                 Console.WriteLine("В словаре нет слов содержащих все эти буквы");
             else
@@ -57,7 +60,14 @@ namespace _5Words
 
             Console.WriteLine("Введите буквы которые не должно содержать слово(пример:абе)");
             var chars = Console.ReadLine();
-            var wordsByNonChars = _storage.FindWordsByNonChars(chars);
+
+            var filter = new Filter
+            {
+                EnableNonContains = true,
+                NonContains = chars
+            };
+
+            var wordsByNonChars = _storage.Filtrate(filter);
             if (wordsByNonChars.Count == 0)
                 Console.WriteLine("В словаре нет слов не содержащих все эти буквы");
             else
@@ -69,8 +79,16 @@ namespace _5Words
             var charsContains = Console.ReadLine();
             Console.WriteLine("Введите буквы которые не должно содержать слово(пример:абе)");
             var charsNonContains = Console.ReadLine();
-            var wordsByChars = _storage.FindWordsByChars(charsContains);
-            var filteredWords = _storage.FindWordsByNonChars(charsNonContains, wordsByChars);
+
+            var filter = new Filter
+            {
+                EnableContains = true,
+                EnableNonContains = true,
+                Contains = charsContains,
+                NonContains = charsNonContains
+            };
+
+            var filteredWords = _storage.Filtrate(filter);
 
             if (filteredWords.Count == 0)
                 Console.WriteLine("В словаре нет таких слов");
@@ -81,7 +99,14 @@ namespace _5Words
         {
             Console.WriteLine("Введите шаблон (пример:аб_а_)");
             var template = Console.ReadLine();
-            var wordsByTemplate = _storage.FindWordsByTemplate(template);
+
+            var filter = new Filter
+            {
+                EnableByTemplate = true,
+                Template = template
+            };
+
+            var wordsByTemplate = _storage.Filtrate(filter);
             if (wordsByTemplate.Count == 0)
                 Console.WriteLine("В словаре нет таких слов");
             else
@@ -95,9 +120,48 @@ namespace _5Words
             var charsNonContains = Console.ReadLine();
             Console.WriteLine("Введите шаблон (пример:аб_а_)");
             var template = Console.ReadLine();
-            var wordsByChars = _storage.FindWordsByChars(charsContains);
-            var wordsByNonCharsInWordsByChars = _storage.FindWordsByNonChars(charsNonContains, wordsByChars);
-            var filteredWords = _storage.FindWordsByTemplate(template, wordsByNonCharsInWordsByChars);
+
+            var filter = new Filter
+            {
+                EnableContains = true,
+                EnableNonContains = true,
+                EnableByTemplate = true,
+                Contains = charsContains,
+                NonContains = charsNonContains,
+                Template = template
+            };
+
+            var filteredWords = _storage.Filtrate(filter);
+            if (filteredWords.Count == 0)
+                Console.WriteLine("В словаре нет таких слов");
+            else
+                _consoleView.ShowWords(filteredWords);
+        }
+
+        public void ContainsAndNonContainsCharsAndTemplateAndAntiTemplate()
+        {
+            Console.WriteLine("Введите буквы которые должно содержать слово(пример:абе)");
+            var charsContains = Console.ReadLine();
+            Console.WriteLine("Введите буквы которые не должно содержать слово(пример:абе)");
+            var charsNonContains = Console.ReadLine();
+            Console.WriteLine("Введите шаблон (пример:аб_а_)");
+            var template = Console.ReadLine();
+            Console.WriteLine("Введите анти-шаблон (пример:__г_д)");
+            var antiTemplate = Console.ReadLine();
+
+            var filter = new Filter
+            {
+                EnableContains = true,
+                EnableNonContains = true,
+                EnableByTemplate = true,
+                EnableByAntiTemplate = true,
+                Contains = charsContains,
+                NonContains = charsNonContains,
+                Template = template,
+                AntiTemplate = antiTemplate
+            };
+
+            var filteredWords = _storage.Filtrate(filter);
             if (filteredWords.Count == 0)
                 Console.WriteLine("В словаре нет таких слов");
             else

@@ -140,5 +140,57 @@ namespace _5Words
             return result;
 
         }
+
+        public List<string> FindWordsByAntiTemplate(string template, List<string> words = null)
+        {
+            if (words == null)
+                words = Storage;
+
+            if (template.Length != CharCount)
+                return new List<string>();
+
+            var result = new List<string>();
+
+            foreach (var storageItem in words)
+            {
+                var flag = true;
+
+                for (int i = 0; i < template.Length; i++)
+                {
+                    if (template[i] != '_')
+                    {
+                        if (template[i] == storageItem[i])
+                        {
+                            flag = false;
+                            break;
+                        }
+                    }
+                }
+
+                if (flag)
+                    result.Add(storageItem);
+            }
+
+            return result;
+
+        }
+
+        public List<string> Filtrate(Filter filter)
+        {
+            var data = Storage.ToList();
+            if (filter.EnableContains)
+                data = FindWordsByChars(filter.Contains, data);
+
+            if (filter.EnableNonContains)
+                data = FindWordsByNonChars(filter.NonContains, data);
+
+            if (filter.EnableByTemplate)
+                data = FindWordsByTemplate(filter.Template, data);
+
+            if (filter.EnableByAntiTemplate)
+                data = FindWordsByAntiTemplate(filter.AntiTemplate, data);
+
+            return data;
+        }
     }
 }
