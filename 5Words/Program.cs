@@ -92,17 +92,17 @@ namespace MyApp
 
         static void ConsoleMode()
         {
-            Command.ProgramStart();
-            var charCount = Command.GetWordLength();
+            ConsoleUtility.ProgramStart();
+            var charCount = ConsoleUtility.GetWordLength();
             var wstorage = new WordsStorage(charCount, Configuration.DictionaryFileName);
 
             var nonRepeatLetters = wstorage.FindNonReapeatingLettersWords();
-            Command.StorageInfo(charCount, wstorage.Storage.Count, nonRepeatLetters.Count);
-            var commandObject = new Command(wstorage);
+            ConsoleUtility.StorageInfo(charCount, wstorage.Storage.Count, nonRepeatLetters.Count);
+            var commandObject = new ConsoleUtility(wstorage);
 
             while (true)
             {
-                var command = Command.GetMenuItem();
+                var command = ConsoleUtility.GetMenuItem();
                 commandObject.Run(command);
             }
 

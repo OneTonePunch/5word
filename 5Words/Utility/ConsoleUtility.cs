@@ -1,13 +1,13 @@
 ﻿using _5Words.Models;
 
-namespace _5Words
+namespace _5Words.Utility
 {
-    public class Command
+    public class ConsoleUtility
     {
         private Random _random;
         private WordsStorage _storage;
         private static string _lineString = "**********************************************";
-        public Command(WordsStorage storage)
+        public ConsoleUtility(WordsStorage storage)
         {
             _random = new Random();
             _storage = storage;
@@ -49,7 +49,7 @@ namespace _5Words
                 EnableContains = true,
                 Contains = chars
             };
-        
+
             var wordsByChars = _storage.Filtrate(filter);
             if (wordsByChars.Count == 0)
                 Console.WriteLine("В словаре нет слов содержащих все эти буквы");
