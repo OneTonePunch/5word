@@ -44,7 +44,7 @@ namespace MyApp
                     await BotUtility.SendRandom(botClient, message);
                     return;
                 }
-                await botClient.SendTextMessageAsync(message.Chat, "Привет-привет!!");
+                await botClient.SendTextMessageAsync(message.Chat, Configuration.Messages.Undefined);
                 
             }
         }
@@ -92,18 +92,17 @@ namespace MyApp
 
         static void ConsoleMode()
         {
-            var consoleView = new ConsoleView();
-            consoleView.ProgramStart();
-            var charCount = consoleView.GetWordLength();
+            Command.ProgramStart();
+            var charCount = Command.GetWordLength();
+            var wstorage = new WordsStorage(charCount, Configuration.DictionaryFileName);
 
-            var wstorage = new WordsStorage(charCount, "russian_nouns.txt");
             var nonRepeatLetters = wstorage.FindNonReapeatingLettersWords();
-            consoleView.StorageInfo(charCount, wstorage.Storage.Count, nonRepeatLetters.Count);
+            Command.StorageInfo(charCount, wstorage.Storage.Count, nonRepeatLetters.Count);
             var commandObject = new Command(wstorage);
 
             while (true)
             {
-                var command = consoleView.GetMenuItem();
+                var command = Command.GetMenuItem();
                 commandObject.Run(command);
             }
 

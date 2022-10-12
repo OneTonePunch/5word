@@ -15,5 +15,8 @@ namespace _5Words.Models
         public string CantRecognize { get; set; }
 
         public string Help { get; set; }
+
+        public string Undefined { get; set; }
+        
     }
 }
