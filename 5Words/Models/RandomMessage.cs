@@ -1,5 +1,4 @@
-﻿
-namespace _5Words
+﻿namespace _5Words.Models
 {
     public class RandomMessage
     {

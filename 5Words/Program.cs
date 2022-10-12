@@ -1,4 +1,6 @@
 ﻿using _5Words;
+using _5Words.Models;
+using _5Words.Utility;
 using Newtonsoft.Json;
 using Telegram.Bot;
 using Telegram.Bot.Extensions.Polling;
@@ -9,34 +11,35 @@ namespace MyApp
 {
     internal class Program
     {
-        private static ITelegramBotClient bot = new TelegramBotClient("5738281587:AAGr5g-dWjzpq4BhC-EP8LKsXuK4qUgOcLk");
+        public static ApplicationConfiguration Configuration { get; private set; }
+        private static ITelegramBotClient bot { get; set; }
         public static async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
             Console.WriteLine(JsonConvert.SerializeObject(update));
             if (update.Type == UpdateType.Message)
             {
                 var message = update.Message;
-                var messageText = message.Text;
+                var messageText = message.Text.ToLower();
                 var chatId = update.Message.Chat.Id;
                 var userName = update.Message.Chat.Username;
-                if (message.Text.ToLower() == "/start")
+                if (messageText.StartsWith(Configuration.Commands.Start))
                 {
                     await BotUtility.SendHi(botClient, message);
                     await BotUtility.SendHelp(botClient, message);
                     return;
                 }
-                else if (message.Text.ToLower().StartsWith("/find"))
+                else if (messageText.StartsWith(Configuration.Commands.Find))
                 {
                     await BotUtility.Find(botClient, message);
                     return;
 
                 }
-                else if (message.Text.ToLower().StartsWith("/help"))
+                else if (messageText.StartsWith(Configuration.Commands.Help))
                 {
                     await BotUtility.SendHelp(botClient, message);
                     return;
                 }
-                else if (message.Text.ToLower().StartsWith("/rnd"))
+                else if (messageText.StartsWith(Configuration.Commands.Random))
                 {
                     await BotUtility.SendRandom(botClient, message);
                     return;
@@ -54,18 +57,29 @@ namespace MyApp
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Запущен бот " + bot.GetMeAsync().Result.FirstName);
+            Configuration = ApplicationConfiguration.LoadConfiguration();
+            if (Configuration.RunType == RunType.Console)
+                ConsoleMode();
+            else if (Configuration.RunType == RunType.TelegramBot)
+                BotMode();
+           
+        }
+
+        static void BotMode()
+        {
+            bot = new TelegramBotClient(Configuration.TelegramBotApiKey);
+            Console.WriteLine("Bot run " + bot.GetMeAsync().Result.FirstName);
 
             var cts = new CancellationTokenSource();
             var cancellationToken = cts.Token;
             var receiverOptions = new ReceiverOptions
             {
-                AllowedUpdates = new UpdateType[] 
+                AllowedUpdates = new UpdateType[]
                 {
                     UpdateType.Message,
                     UpdateType.EditedMessage
                 }
-                    
+
             };
             bot.StartReceiving(
                 HandleUpdateAsync,
@@ -76,26 +90,24 @@ namespace MyApp
             Console.ReadLine();
         }
 
-       
+        static void ConsoleMode()
+        {
+            var consoleView = new ConsoleView();
+            consoleView.ProgramStart();
+            var charCount = consoleView.GetWordLength();
 
-        //static void Main(string[] args)
-        //{
-        //    var consoleView = new ConsoleView();
-        //    consoleView.ProgramStart();
-        //    var charCount = consoleView.GetWordLength();
+            var wstorage = new WordsStorage(charCount, "russian_nouns.txt");
+            var nonRepeatLetters = wstorage.FindNonReapeatingLettersWords();
+            consoleView.StorageInfo(charCount, wstorage.Storage.Count, nonRepeatLetters.Count);
+            var commandObject = new Command(wstorage);
 
-        //    var wstorage = new WordsStorage(charCount, "russian_nouns.txt");
-        //    var nonRepeatLetters = wstorage.FindNonReapeatingLettersWords();
-        //    consoleView.StorageInfo(charCount, wstorage.Storage.Count, nonRepeatLetters.Count);
-        //    var commandObject = new Command(wstorage);
+            while (true)
+            {
+                var command = consoleView.GetMenuItem();
+                commandObject.Run(command);
+            }
 
-        //    while (true)
-        //    {
-        //        var command = consoleView.GetMenuItem();
-        //        commandObject.Run(command);
-        //    }
-
-        //    Console.ReadLine();
-        //}
+            Console.ReadLine();
+        }
     }
 }

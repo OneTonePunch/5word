@@ -1,4 +1,6 @@
-﻿namespace _5Words
+﻿using _5Words.Models;
+
+namespace _5Words
 {
     public class Command
     {

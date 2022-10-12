@@ -1,4 +1,6 @@
 ﻿
+using _5Words.Models;
+
 namespace _5Words
 {
     public class WordsStorage

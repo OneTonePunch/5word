@@ -11,3 +11,5 @@ https://core.telegram.org/bots/api
 
 
 /find {length:"5", contains:"abc", noncontains:"fgh", template:"__aew", antitemplate:"mw__t"}
+/найти длина = 5; содержит = атон; несодержит = кербз; шаблон = _ан__ ; антишаблон = _о__а
+/случайно длина=5
