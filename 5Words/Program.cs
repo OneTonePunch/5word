@@ -6,6 +6,7 @@ using Telegram.Bot;
 using Telegram.Bot.Extensions.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace MyApp
 {
@@ -77,7 +78,8 @@ namespace MyApp
                 AllowedUpdates = new UpdateType[]
                 {
                     UpdateType.Message,
-                    UpdateType.EditedMessage
+                    UpdateType.EditedMessage,
+                    UpdateType.CallbackQuery
                 }
 
             };

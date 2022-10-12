@@ -2,19 +2,34 @@
 using Telegram.Bot;
 using _5Words.Models;
 using MyApp;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace _5Words.Utility
 {
     public static class BotUtility
     {
         private static Random _random = new Random();
+
+        private static InlineKeyboardMarkup botKeyboard { get; set; }
+        static BotUtility()
+        {
+            botKeyboard = new InlineKeyboardMarkup(
+                new InlineKeyboardButton[][]
+                {
+                    new InlineKeyboardButton[]
+                    {
+                         InlineKeyboardButton.WithCallbackData("Помощь", Program.Configuration.Commands.Help)
+                    }
+                }
+            );
+        }
         public static async Task SendHi(ITelegramBotClient botClient, Message message)
         {
-            await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.Greeting);
+            await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.Greeting, replyMarkup:botKeyboard);
         }
         public static async Task SendHelp(ITelegramBotClient botClient, Message message)
         {
-            await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.Help);
+            await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.Help, replyMarkup: botKeyboard);
             return;
         }
 
@@ -44,19 +59,19 @@ namespace _5Words.Utility
                 var result = wstorage.Filtrate(filter);
                 if (result == null || result.Count == 0)
                 {
-                    await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.CantFind);
+                    await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.CantFind, replyMarkup: botKeyboard);
                     return;
                 }
                 else
                 {
                     var responseText = string.Concat(result.Select(x => $"{result.IndexOf(x) + 1}]{x}{Environment.NewLine}"));
-                    await botClient.SendTextMessageAsync(message.Chat, responseText);
+                    await botClient.SendTextMessageAsync(message.Chat, responseText, replyMarkup: botKeyboard);
                     return;
                 }
             }
             catch (Exception ex)
             {
-                await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.CantRecognize);
+                await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.CantRecognize, replyMarkup: botKeyboard);
                 return;
             }
         }
@@ -77,19 +92,19 @@ namespace _5Words.Utility
                 var result = new List<string> { nonRepeatLetters[randomIndex] };
                 if (result == null || result.Count == 0)
                 {
-                    await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.CantFind);
+                    await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.CantFind, replyMarkup: botKeyboard);
                     return;
                 }
                 else
                 {
                     var responseText = string.Concat(result.Select(x => $"{x}{Environment.NewLine}"));
-                    await botClient.SendTextMessageAsync(message.Chat, responseText);
+                    await botClient.SendTextMessageAsync(message.Chat, responseText, replyMarkup: botKeyboard);
                     return;
                 }
             }
             catch (Exception ex)
             {
-                await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.CantRecognize);
+                await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.CantRecognize, replyMarkup: botKeyboard);
                 return;
             }
         }
