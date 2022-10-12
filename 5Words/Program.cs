@@ -48,6 +48,10 @@ namespace MyApp
                 await botClient.SendTextMessageAsync(message.Chat, Configuration.Messages.Undefined);
                 
             }
+            else if (update.Type == UpdateType.CallbackQuery)
+            {
+                
+            }
         }
 
         public static async Task HandleErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)

@@ -9,27 +9,36 @@ namespace _5Words.Utility
     public static class BotUtility
     {
         private static Random _random = new Random();
+        //await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.Greeting, replyMarkup:botMenuKeyboard);
 
-        private static InlineKeyboardMarkup botKeyboard { get; set; }
-        static BotUtility()
-        {
-            botKeyboard = new InlineKeyboardMarkup(
-                new InlineKeyboardButton[][]
-                {
-                    new InlineKeyboardButton[]
-                    {
-                         InlineKeyboardButton.WithCallbackData("Помощь", Program.Configuration.Commands.Help)
-                    }
-                }
-            );
-        }
+        // private static InlineKeyboardMarkup botMenuKeyboard { get; set; } = 
+        //     new InlineKeyboardMarkup(
+        //         new InlineKeyboardButton[][]
+        //         {
+        //             new InlineKeyboardButton[]
+        //             {
+        //                  InlineKeyboardButton.WithCallbackData("Случайное слово", Program.Configuration.Commands.Random),
+        //                  InlineKeyboardButton.WithCallbackData("Найти", Program.Configuration.Commands.Find)
+        //             }
+        //         });
+
+        // private static InlineKeyboardMarkup botCancelKeyboard { get; set; } = 
+        //     new InlineKeyboardMarkup(
+        //         new InlineKeyboardButton[][]
+        //         {
+        //             new InlineKeyboardButton[]
+        //             {
+        //                  InlineKeyboardButton.WithCallbackData("Случайное слово", Program.Configuration.Commands.Cancel),
+        //             }
+        //         });
+
         public static async Task SendHi(ITelegramBotClient botClient, Message message)
         {
-            await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.Greeting, replyMarkup:botKeyboard);
+            await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.Greeting);
         }
         public static async Task SendHelp(ITelegramBotClient botClient, Message message)
         {
-            await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.Help, replyMarkup: botKeyboard);
+            await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.Help);
             return;
         }
 
@@ -59,19 +68,19 @@ namespace _5Words.Utility
                 var result = wstorage.Filtrate(filter);
                 if (result == null || result.Count == 0)
                 {
-                    await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.CantFind, replyMarkup: botKeyboard);
+                    await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.CantFind);
                     return;
                 }
                 else
                 {
                     var responseText = string.Concat(result.Select(x => $"{result.IndexOf(x) + 1}]{x}{Environment.NewLine}"));
-                    await botClient.SendTextMessageAsync(message.Chat, responseText, replyMarkup: botKeyboard);
+                    await botClient.SendTextMessageAsync(message.Chat, responseText);
                     return;
                 }
             }
             catch (Exception ex)
             {
-                await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.CantRecognize, replyMarkup: botKeyboard);
+                await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.CantRecognize);
                 return;
             }
         }
@@ -92,19 +101,19 @@ namespace _5Words.Utility
                 var result = new List<string> { nonRepeatLetters[randomIndex] };
                 if (result == null || result.Count == 0)
                 {
-                    await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.CantFind, replyMarkup: botKeyboard);
+                    await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.CantFind);
                     return;
                 }
                 else
                 {
                     var responseText = string.Concat(result.Select(x => $"{x}{Environment.NewLine}"));
-                    await botClient.SendTextMessageAsync(message.Chat, responseText, replyMarkup: botKeyboard);
+                    await botClient.SendTextMessageAsync(message.Chat, responseText);
                     return;
                 }
             }
             catch (Exception ex)
             {
-                await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.CantRecognize, replyMarkup: botKeyboard);
+                await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.CantRecognize);
                 return;
             }
         }
@@ -182,5 +191,6 @@ namespace _5Words.Utility
 
             return null;
         }
+
     }
 }
