@@ -4,6 +4,7 @@ using _5Words.Models;
 using MyApp;
 using Telegram.Bot.Types.ReplyMarkups;
 using System.Reflection;
+using Newtonsoft.Json;
 
 namespace _5Words.Utility
 {
@@ -21,26 +22,39 @@ namespace _5Words.Utility
             return;
         }
 
-        public static async Task Find(ITelegramBotClient botClient, Message message)
+        public static async Task SendInfo(long chatId, ITelegramBotClient botClient, Message message)
         {
+            Session session = null;
+            if (!SessionStorage.Storage.TryGetValue(chatId, out session)||session.Params.Length<0)
+            {
+                await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.CantFindSession);
+                return;
+            }
+                
+            var info =$"Длина:{session.Params.Length} \n"; 
+            info+= $"Содержит:{session.Params.Filter.Contains} \n";
+            info+= $"Несодержит:{session.Params.Filter.NonContains} \n";
+            info+=$"Шаблон:{session.Params.Filter.Template} \n";
+            info+=$"Антишаблон:{session.Params.Filter.AntiTemplate} \n";
+            await botClient.SendTextMessageAsync(message.Chat, info);
+            return;
+        }
+
+        public static async Task Find(long chatId, ITelegramBotClient botClient, Message message)
+        {
+            Session session = null;
+            if (!SessionStorage.Storage.TryGetValue(chatId, out session)||session.Params.Length<0)
+            {
+                await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.CantRecognize);
+                return;
+            }
+                
+            
+
             try
             {
-                var commandString = Program.Configuration.Commands.Find;
-                var jsonText = message.Text
-                    .ToLower()
-                    .Replace(commandString, "")
-                    .Trim();
-                var findMessage = ParseFindMessage(jsonText);
-
-                var wstorage = new WordsStorage(findMessage.Length, Program.Configuration.DictionaryFileName);
-                var filter = new Filter
-                {
-                    AntiTemplate = findMessage.AntiTemplate?.ToLower(),
-                    Template = findMessage.Template?.ToLower(),
-                    Contains = findMessage.Contains?.ToLower(),
-                    NonContains = findMessage.NonContains?.ToLower()
-                };
-                var result = wstorage.Filtrate(filter);
+                var wstorage = new WordsStorage(session.Params.Length, Program.Configuration.DictionaryFileName);
+                var result = wstorage.Filtrate(session.Params.Filter);
                 if (result == null || result.Count == 0)
                 {
                     await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.CantFind);
@@ -60,17 +74,19 @@ namespace _5Words.Utility
             }
         }
 
-        public static async Task SendRandom(ITelegramBotClient botClient, Message message)
+        public static async Task SendRandom(long chatId, ITelegramBotClient botClient, Message message)
         {
+            Session session = null;
+            if (!SessionStorage.Storage.TryGetValue(chatId, out session)||session.Params.Length<0)
+            {
+                await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.CantRecognize);
+                return;
+            }
+                
+
             try
             {
-                var commandString = Program.Configuration.Commands.Random;
-                var jsonText = message.Text.ToLower()
-                    .Replace(commandString, "")
-                    .Trim();
-                var findMessage = ParseRandomMessage(jsonText);
-
-                var wstorage = new WordsStorage(findMessage.Length, Program.Configuration.DictionaryFileName);
+                var wstorage = new WordsStorage(session.Params.Length, Program.Configuration.DictionaryFileName);
                 var nonRepeatLetters = wstorage.FindNonReapeatingLettersWords();
                 int randomIndex = _random.Next(0, nonRepeatLetters.Count - 1);
                 var result = new List<string> { nonRepeatLetters[randomIndex] };
@@ -92,125 +108,57 @@ namespace _5Words.Utility
                 return;
             }
         }
-
-        private static Dictionary<string, string> ParseMessage(string message)
-        {
-            if (string.IsNullOrEmpty(message))
-                return new Dictionary<string, string>();
-
-            var splited = message.Split(';', StringSplitOptions.RemoveEmptyEntries);
-            var result = new Dictionary<string, string>();
-            foreach (var item in splited)
-            {
-                var sp = item.Split('=');
-                if (sp.Length == 2)
-                {
-                    result.Add(sp[0].Trim().ToLower(), sp[1].Trim().ToLower());
-                }
-            }
-
-            return result;
-        }
-
-        private static RandomMessage ParseRandomMessage(string message)
-        {
-            var splitted = ParseMessage(message);
-            if (splitted != null && splitted.Count > 0)
-            {
-                var result = new RandomMessage();
-                var lengthColumn = splitted.ContainsKey("length") ? "length" : "длина";
-                if (splitted.TryGetValue(lengthColumn, out string lengthString) && int.TryParse(lengthString, out int length))
-                {
-                    result.Length = length;
-                    return result;
-                }
-            }
-
-            return null;
-        }
-
-        private static FindMessage ParseFindMessage(string message)
-        {
-            var splitted = ParseMessage(message);
-            if (splitted != null && splitted.Count > 0)
-            {
-                var result = new FindMessage();
-                var lengthColumn = splitted.ContainsKey("length") ? "length" : "длина";
-                if (splitted.TryGetValue(lengthColumn, out string lengthString) && int.TryParse(lengthString, out int length))
-                {
-                    result.Length = length;
-                }
-                var containsColumn = splitted.ContainsKey("contains") ? "contains" : "содержит";
-                if (splitted.TryGetValue(containsColumn, out string contains) && !string.IsNullOrEmpty(contains))
-                {
-                    result.Contains = contains;
-                }
-                var nonContainsColumn = splitted.ContainsKey("noncontains") ? "noncontains" : "несодержит";
-                if (splitted.TryGetValue(nonContainsColumn, out string noncontains) && !string.IsNullOrEmpty(noncontains))
-                {
-                    result.NonContains = noncontains;
-                }
-                var templateColumn = splitted.ContainsKey("template") ? "template" : "шаблон";
-                if (splitted.TryGetValue(templateColumn, out string template) && !string.IsNullOrEmpty(template))
-                {
-                    result.Template = template;
-                }
-                var antiTemplateColumn = splitted.ContainsKey("antitemplate") ? "antitemplate" : "антишаблон";
-                if (splitted.TryGetValue(antiTemplateColumn, out string antitemplate) && !string.IsNullOrEmpty(antitemplate))
-                {
-                    result.AntiTemplate = antitemplate;
-                }
-
-                return result;
-            }
-
-            return null;
-        }
-
-
-        //public static InlineKeyboardMarkup GetButtonKeyboardExample()
-        //{
-        //    //await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.Greeting, replyMarkup: botMenuKeyboard);
-
-        //   InlineKeyboardMarkup botMenuKeyboard = new InlineKeyboardMarkup(
-        //       new InlineKeyboardButton[][]
-        //       {
-        //            new InlineKeyboardButton[]
-        //            {
-        //                InlineKeyboardButton.WithCallbackData("Случайное слово", Program.Configuration.Commands.Random),
-        //                InlineKeyboardButton.WithCallbackData("Найти", Program.Configuration.Commands.Find)
-        //            }
-        //       });
-        //       return botMenuKeyboard;
-        //}
-
+        
         public static async Task SetCommandMenu(ITelegramBotClient bot)
         {
             var commandsProps = Program.Configuration.Commands.GetType().GetProperties();
             var botCommandsMenuCollection = new List<BotCommand> {
-                new BotCommand
-                {
-                    Command = Program.Configuration.Commands.Start,
-                    Description = Program.Configuration.Commands.Start.GetType().Name
-                },
-                new BotCommand
-                {
-                    Command = Program.Configuration.Commands.Help,
-                    Description = Program.Configuration.Commands.Help.GetType().Name
-                },
+                // new BotCommand
+                // {
+                //     Command = Program.Configuration.Commands.Start,
+                //     Description = Program.Configuration.Commands.Start.GetType().Name
+                // },
+                // new BotCommand
+                // {
+                //     Command = Program.Configuration.Commands.Help,
+                //     Description = Program.Configuration.Commands.Help.GetType().Name
+                // },
             };
-            //foreach (var prop in commandsProps)
-            //{
-            //    //var descrProp = Program.Configuration.CommandsDescription.GetType().GetProperty(prop.Name);
-            //    //var descrValue = descrProp.GetValue(Program.Configuration.CommandsDescription).ToString();
-            //    var cmd = new BotCommand
-            //    {
-            //        Command = prop.GetValue(Program.Configuration.Commands).ToString(),
-            //        Description = prop.Name
-            //    };
-            //    botCommandsMenuCollection.Add(cmd);
-            //}
             await bot.SetMyCommandsAsync(botCommandsMenuCollection);
+        }
+
+        public static async Task UpdateSession(long chatId, Message message, CommandType commandType)
+        {
+            Session session = null;
+            if (!SessionStorage.Storage.TryGetValue(chatId, out session))
+            {
+                session = new Session(chatId, message.Chat.Username, new SessionParams{
+                    Filter = new Filter()
+                });
+            }
+
+            var commandText = Program.Configuration.Commands.GetValueByType(commandType);
+            var valueText = message.Text.Replace(commandText,"")?.Trim();
+            switch (commandType)
+            {
+                case CommandType.Length:
+                    session.Params.Length = Convert.ToInt32(valueText);
+                    break;
+                case CommandType.Contains:
+                    session.Params.Filter.Contains = valueText;
+                    break;
+                case CommandType.NonContains:
+                    session.Params.Filter.NonContains = valueText;
+                    break;
+                case CommandType.Template:
+                    session.Params.Filter.Template = valueText;
+                    break;
+                case CommandType.AntiTemplate:
+                    session.Params.Filter.AntiTemplate = valueText;
+                    break;
+            }
+            
+            SessionStorage.AddOrUpdate(chatId, session);    
         }
 
     }

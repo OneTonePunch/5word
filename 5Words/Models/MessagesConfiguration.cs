@@ -17,6 +17,8 @@ namespace _5Words.Models
         public string Help { get; set; }
 
         public string Undefined { get; set; }
-        
+
+        public string CantFindSession { get; set; }
+
     }
 }

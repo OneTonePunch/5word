@@ -31,7 +31,7 @@ namespace MyApp
                 }
                 else if (messageText.StartsWith(Configuration.Commands.Find))
                 {
-                    await BotUtility.Find(botClient, message);
+                    await BotUtility.Find(chatId, botClient, message);
                     return;
 
                 }
@@ -42,14 +42,40 @@ namespace MyApp
                 }
                 else if (messageText.StartsWith(Configuration.Commands.Random))
                 {
-                    await BotUtility.SendRandom(botClient, message);
+                    await BotUtility.SendRandom(chatId, botClient, message);
+                    return;
+                }
+                else if (messageText.StartsWith(Configuration.Commands.Length))
+                {
+                    await BotUtility.UpdateSession(chatId, message, CommandType.Length);
+                    return;
+                }
+                else if (messageText.StartsWith(Configuration.Commands.Contains))
+                {
+                    await BotUtility.UpdateSession(chatId, message, CommandType.Contains);
+                    return;
+                }
+                else if (messageText.StartsWith(Configuration.Commands.NonContains))
+                {
+                    await BotUtility.UpdateSession(chatId, message, CommandType.NonContains);
+                    return;
+                }
+                else if (messageText.StartsWith(Configuration.Commands.Template))
+                {
+                    await BotUtility.UpdateSession(chatId, message, CommandType.Template);
+                    return;
+                }
+                else if (messageText.StartsWith(Configuration.Commands.AntiTemplate))
+                {
+                    await BotUtility.UpdateSession(chatId, message, CommandType.AntiTemplate);
+                    return;
+                }
+                else if (messageText.StartsWith(Configuration.Commands.StateInfo))
+                {
+                    await BotUtility.SendInfo(chatId, botClient, message);
                     return;
                 }
                 await botClient.SendTextMessageAsync(message.Chat, Configuration.Messages.Undefined);
-                
-            }
-            else if (update.Type == UpdateType.CallbackQuery)
-            {
                 
             }
         }
@@ -74,7 +100,7 @@ namespace MyApp
         {
             bot = new TelegramBotClient(Configuration.TelegramBotApiKey);
             Console.WriteLine("Bot run " + (await bot.GetMeAsync()).FirstName);
-            //await BotUtility.SetCommandMenu(bot);
+            await BotUtility.SetCommandMenu(bot);
 
             var cts = new CancellationTokenSource();
             var cancellationToken = cts.Token;

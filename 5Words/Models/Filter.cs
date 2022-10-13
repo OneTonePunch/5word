@@ -8,12 +8,12 @@ namespace _5Words.Models
 {
     public class Filter
     {
-        private string _contains;
+        private string _contains = "";
 
-        private string _nonContains;
+        private string _nonContains = "";
 
-        private string _template;
-        private string _antitemplate;
+        private string _template = "";
+        private string _antitemplate = "";
         public bool EnableContains { get; private set; } = false;
 
         public bool EnableNonContains { get; private set; } = false;

@@ -8,37 +8,20 @@ namespace _5Words.Models
 {
     public class Session
     {
-        public Session(long chatId, string userName, SessionState state, SessionParams prms)
+        public Session(long chatId, string userName, SessionParams prms)
         {
             ChatId = chatId;
             UserName = userName;
-            State = state;
             Params = prms;
         }
         public string UserName { get; set; }
         public long ChatId { get; set; }
-        public SessionState State { get; set; }
         public SessionParams Params { get; set; }
-    }
-
-    public enum SessionState
-    {
-        StartRandom,
-        GetLengthRandom,
-        EndRandom,
-
-        StartFind,
-        GetLengthFind,
-        GetContainsFind,
-        GetNonContainsFind,
-        GetTemplateFind,
-        GetAntiTemplateFind,
-        EndFind
     }
 
     public class SessionParams
     {
-        public int Length { get; set; }
+        public int Length { get; set; } = -1;
 
         public Filter Filter { get; set; }
     }
