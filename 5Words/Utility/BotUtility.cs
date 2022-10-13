@@ -113,21 +113,31 @@ namespace _5Words.Utility
         {
             var commandsProps = Program.Configuration.Commands.GetType().GetProperties();
             var botCommandsMenuCollection = new List<BotCommand> {
-                // new BotCommand
-                // {
-                //     Command = Program.Configuration.Commands.Start,
-                //     Description = Program.Configuration.Commands.Start.GetType().Name
-                // },
-                // new BotCommand
-                // {
-                //     Command = Program.Configuration.Commands.Help,
-                //     Description = Program.Configuration.Commands.Help.GetType().Name
-                // },
+                new BotCommand
+                {
+                    Command = "/start",
+                    Description = "Начало работы",
+                },
+                new BotCommand
+                {
+                    Command = "/help",
+                    Description = "Помощь по поиску"
+                },
+                new BotCommand
+                {
+                    Command = "/params",
+                    Description = "Текущие параметры поиска"
+                },
+                new BotCommand
+                {
+                    Command = "/random",
+                    Description = "Случайное слово(обязательно должен присутствовать параметр длина)"
+                },
             };
             await bot.SetMyCommandsAsync(botCommandsMenuCollection);
         }
 
-        public static async Task UpdateSession(long chatId, Message message, CommandType commandType)
+        public static async Task UpdateSession(long chatId, ITelegramBotClient botClient, Message message, CommandType commandType)
         {
             Session session = null;
             if (!SessionStorage.Storage.TryGetValue(chatId, out session))
@@ -159,6 +169,8 @@ namespace _5Words.Utility
             }
             
             SessionStorage.AddOrUpdate(chatId, session);    
+
+            await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.SessionUpdated);
         }
 
     }

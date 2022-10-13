@@ -23,7 +23,7 @@ namespace MyApp
                 var messageText = message.Text.ToLower();
                 var chatId = update.Message.Chat.Id;
                 var userName = update.Message.Chat.Username;
-                if (messageText.StartsWith(Configuration.Commands.Start))
+                if (messageText.StartsWith(Configuration.Commands.Start)||messageText.StartsWith("/start"))
                 {
                     await BotUtility.SendHi(botClient, message);
                     await BotUtility.SendHelp(botClient, message);
@@ -35,47 +35,47 @@ namespace MyApp
                     return;
 
                 }
-                else if (messageText.StartsWith(Configuration.Commands.Help))
+                else if (messageText.StartsWith(Configuration.Commands.Help)||messageText.StartsWith("/help"))
                 {
                     await BotUtility.SendHelp(botClient, message);
                     return;
                 }
-                else if (messageText.StartsWith(Configuration.Commands.Random))
+                else if (messageText.StartsWith(Configuration.Commands.Random)||messageText.StartsWith("/random"))
                 {
                     await BotUtility.SendRandom(chatId, botClient, message);
                     return;
                 }
                 else if (messageText.StartsWith(Configuration.Commands.Length))
                 {
-                    await BotUtility.UpdateSession(chatId, message, CommandType.Length);
+                    await BotUtility.UpdateSession(chatId, botClient, message, CommandType.Length);
                     return;
                 }
                 else if (messageText.StartsWith(Configuration.Commands.Contains))
                 {
-                    await BotUtility.UpdateSession(chatId, message, CommandType.Contains);
+                    await BotUtility.UpdateSession(chatId, botClient, message, CommandType.Contains);
                     return;
                 }
                 else if (messageText.StartsWith(Configuration.Commands.NonContains))
                 {
-                    await BotUtility.UpdateSession(chatId, message, CommandType.NonContains);
+                    await BotUtility.UpdateSession(chatId, botClient, message, CommandType.NonContains);
                     return;
                 }
                 else if (messageText.StartsWith(Configuration.Commands.Template))
                 {
-                    await BotUtility.UpdateSession(chatId, message, CommandType.Template);
+                    await BotUtility.UpdateSession(chatId, botClient, message, CommandType.Template);
                     return;
                 }
                 else if (messageText.StartsWith(Configuration.Commands.AntiTemplate))
                 {
-                    await BotUtility.UpdateSession(chatId, message, CommandType.AntiTemplate);
+                    await BotUtility.UpdateSession(chatId, botClient, message, CommandType.AntiTemplate);
                     return;
                 }
-                else if (messageText.StartsWith(Configuration.Commands.StateInfo))
+                else if (messageText.StartsWith(Configuration.Commands.StateInfo)||messageText.StartsWith("/params"))
                 {
                     await BotUtility.SendInfo(chatId, botClient, message);
                     return;
                 }
-                await botClient.SendTextMessageAsync(message.Chat, Configuration.Messages.Undefined);
+                await botClient.SendTextMessageAsync(message.Chat, Configuration.Messages.CantRecognize);
                 
             }
         }

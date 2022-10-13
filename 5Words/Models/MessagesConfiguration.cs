@@ -20,5 +20,8 @@ namespace _5Words.Models
 
         public string CantFindSession { get; set; }
 
+        public string SessionUpdated { get; set; }
+        
+
     }
 }
