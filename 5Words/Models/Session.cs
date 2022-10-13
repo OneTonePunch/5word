@@ -13,9 +13,12 @@ namespace _5Words.Models
             ChatId = chatId;
             UserName = userName;
             Params = prms;
+            LastUpdate = DateTime.Now;
         }
         public string UserName { get; set; }
         public long ChatId { get; set; }
+
+        public DateTime LastUpdate { get; set; }
         public SessionParams Params { get; set; }
     }
 

@@ -98,6 +98,7 @@ namespace MyApp
 
         static async Task BotMode()
         {
+            SchedullerManager.Start();
             bot = new TelegramBotClient(Configuration.TelegramBotApiKey);
             Console.WriteLine("Bot run " + (await bot.GetMeAsync()).FirstName);
             await BotUtility.SetCommandMenu(bot);

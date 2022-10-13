@@ -14,6 +14,7 @@ namespace _5Words
 
         public static void AddOrUpdate(long chatId, Session session = null)
         {
+            session.LastUpdate = DateTime.Now;
             if (Storage.TryGetValue(chatId, out Session storageSession))
             {
                 storageSession = session;
