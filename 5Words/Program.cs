@@ -66,14 +66,15 @@ namespace MyApp
             if (Configuration.RunType == RunType.Console)
                 ConsoleMode();
             else if (Configuration.RunType == RunType.TelegramBot)
-                BotMode();
+                BotMode().Wait();
            
         }
 
-        static void BotMode()
+        static async Task BotMode()
         {
             bot = new TelegramBotClient(Configuration.TelegramBotApiKey);
-            Console.WriteLine("Bot run " + bot.GetMeAsync().Result.FirstName);
+            Console.WriteLine("Bot run " + (await bot.GetMeAsync()).FirstName);
+            //await BotUtility.SetCommandMenu(bot);
 
             var cts = new CancellationTokenSource();
             var cancellationToken = cts.Token;

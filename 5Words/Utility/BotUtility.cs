@@ -3,34 +3,13 @@ using Telegram.Bot;
 using _5Words.Models;
 using MyApp;
 using Telegram.Bot.Types.ReplyMarkups;
+using System.Reflection;
 
 namespace _5Words.Utility
 {
     public static class BotUtility
     {
         private static Random _random = new Random();
-        //await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.Greeting, replyMarkup:botMenuKeyboard);
-
-        // private static InlineKeyboardMarkup botMenuKeyboard { get; set; } = 
-        //     new InlineKeyboardMarkup(
-        //         new InlineKeyboardButton[][]
-        //         {
-        //             new InlineKeyboardButton[]
-        //             {
-        //                  InlineKeyboardButton.WithCallbackData("Случайное слово", Program.Configuration.Commands.Random),
-        //                  InlineKeyboardButton.WithCallbackData("Найти", Program.Configuration.Commands.Find)
-        //             }
-        //         });
-
-        // private static InlineKeyboardMarkup botCancelKeyboard { get; set; } = 
-        //     new InlineKeyboardMarkup(
-        //         new InlineKeyboardButton[][]
-        //         {
-        //             new InlineKeyboardButton[]
-        //             {
-        //                  InlineKeyboardButton.WithCallbackData("Случайное слово", Program.Configuration.Commands.Cancel),
-        //             }
-        //         });
 
         public static async Task SendHi(ITelegramBotClient botClient, Message message)
         {
@@ -56,10 +35,6 @@ namespace _5Words.Utility
                 var wstorage = new WordsStorage(findMessage.Length, Program.Configuration.DictionaryFileName);
                 var filter = new Filter
                 {
-                    EnableByAntiTemplate = string.IsNullOrEmpty(findMessage.AntiTemplate) ? false : true,
-                    EnableByTemplate = string.IsNullOrEmpty(findMessage.Template) ? false : true,
-                    EnableContains = string.IsNullOrEmpty(findMessage.Contains) ? false : true,
-                    EnableNonContains = string.IsNullOrEmpty(findMessage.NonContains) ? false : true,
                     AntiTemplate = findMessage.AntiTemplate?.ToLower(),
                     Template = findMessage.Template?.ToLower(),
                     Contains = findMessage.Contains?.ToLower(),
@@ -190,6 +165,52 @@ namespace _5Words.Utility
             }
 
             return null;
+        }
+
+
+        //public static InlineKeyboardMarkup GetButtonKeyboardExample()
+        //{
+        //    //await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.Greeting, replyMarkup: botMenuKeyboard);
+
+        //   InlineKeyboardMarkup botMenuKeyboard = new InlineKeyboardMarkup(
+        //       new InlineKeyboardButton[][]
+        //       {
+        //            new InlineKeyboardButton[]
+        //            {
+        //                InlineKeyboardButton.WithCallbackData("Случайное слово", Program.Configuration.Commands.Random),
+        //                InlineKeyboardButton.WithCallbackData("Найти", Program.Configuration.Commands.Find)
+        //            }
+        //       });
+        //       return botMenuKeyboard;
+        //}
+
+        public static async Task SetCommandMenu(ITelegramBotClient bot)
+        {
+            var commandsProps = Program.Configuration.Commands.GetType().GetProperties();
+            var botCommandsMenuCollection = new List<BotCommand> {
+                new BotCommand
+                {
+                    Command = Program.Configuration.Commands.Start,
+                    Description = Program.Configuration.Commands.Start.GetType().Name
+                },
+                new BotCommand
+                {
+                    Command = Program.Configuration.Commands.Help,
+                    Description = Program.Configuration.Commands.Help.GetType().Name
+                },
+            };
+            //foreach (var prop in commandsProps)
+            //{
+            //    //var descrProp = Program.Configuration.CommandsDescription.GetType().GetProperty(prop.Name);
+            //    //var descrValue = descrProp.GetValue(Program.Configuration.CommandsDescription).ToString();
+            //    var cmd = new BotCommand
+            //    {
+            //        Command = prop.GetValue(Program.Configuration.Commands).ToString(),
+            //        Description = prop.Name
+            //    };
+            //    botCommandsMenuCollection.Add(cmd);
+            //}
+            await bot.SetMyCommandsAsync(botCommandsMenuCollection);
         }
 
     }

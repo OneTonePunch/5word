@@ -8,21 +8,87 @@ namespace _5Words.Models
 {
     public class Filter
     {
-        public bool EnableContains { get; set; } = false;
+        private string _contains;
 
-        public bool EnableNonContains { get; set; } = false;
+        private string _nonContains;
 
-        public bool EnableByTemplate { get; set; } = false;
+        private string _template;
+        private string _antitemplate;
+        public bool EnableContains { get; private set; } = false;
 
-        public bool EnableByAntiTemplate { get; set; } = false;
+        public bool EnableNonContains { get; private set; } = false;
 
-        public string Contains { get; set; }
+        public bool EnableByTemplate { get; private set; } = false;
 
-        public string NonContains { get; set; }
+        public bool EnableByAntiTemplate { get; private set; } = false;
 
-        public string Template { get; set; }
+        public string Contains
+        {
+            get
+            {
+                return _contains;
+            }
+            set
+            {
+                if (!string.IsNullOrEmpty(value))
+                    EnableContains = true;
+                else
+                    EnableContains = false;
 
-        public string AntiTemplate { get; set; }
+                _contains = value;
+            }
+        }
+
+        public string NonContains
+        {
+            get
+            {
+                return _nonContains;
+            }
+            set
+            {
+                if (!string.IsNullOrEmpty(value))
+                    EnableNonContains = true;
+                else
+                    EnableNonContains = false;
+
+                _nonContains = value;
+            }
+        }
+
+        public string Template
+        {
+            get
+            {
+                return _template;
+            }
+            set
+            {
+                if (!string.IsNullOrEmpty(value))
+                    EnableByTemplate = true;
+                else
+                    EnableByTemplate = false;
+
+                _template = value;
+            }
+        }
+
+        public string AntiTemplate
+        {
+            get
+            {
+                return _antitemplate;
+            }
+            set
+            {
+                if (!string.IsNullOrEmpty(value))
+                    EnableByAntiTemplate = true;
+                else
+                    EnableByAntiTemplate = false;
+
+                _antitemplate = value;
+            }
+        }
 
 
     }

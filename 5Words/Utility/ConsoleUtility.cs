@@ -46,7 +46,6 @@ namespace _5Words.Utility
 
             var filter = new Filter
             {
-                EnableContains = true,
                 Contains = chars
             };
 
@@ -63,7 +62,6 @@ namespace _5Words.Utility
 
             var filter = new Filter
             {
-                EnableNonContains = true,
                 NonContains = chars
             };
 
@@ -82,8 +80,6 @@ namespace _5Words.Utility
 
             var filter = new Filter
             {
-                EnableContains = true,
-                EnableNonContains = true,
                 Contains = charsContains,
                 NonContains = charsNonContains
             };
@@ -102,7 +98,6 @@ namespace _5Words.Utility
 
             var filter = new Filter
             {
-                EnableByTemplate = true,
                 Template = template
             };
 
@@ -123,9 +118,6 @@ namespace _5Words.Utility
 
             var filter = new Filter
             {
-                EnableContains = true,
-                EnableNonContains = true,
-                EnableByTemplate = true,
                 Contains = charsContains,
                 NonContains = charsNonContains,
                 Template = template
@@ -151,10 +143,6 @@ namespace _5Words.Utility
 
             var filter = new Filter
             {
-                EnableContains = true,
-                EnableNonContains = true,
-                EnableByTemplate = true,
-                EnableByAntiTemplate = true,
                 Contains = charsContains,
                 NonContains = charsNonContains,
                 Template = template,
