@@ -1,0 +1,10 @@
+
+version: '3.4'
+
+services:
+  5words:
+    image: 5words
+    stdin_open: true
+    build:
+      context: .
+      dockerfile: 5Words/Dockerfile
