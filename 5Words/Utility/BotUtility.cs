@@ -62,7 +62,8 @@ namespace _5Words.Utility
                 }
                 else
                 {
-                    var responseText = string.Concat(result.Select(x => $"{result.IndexOf(x) + 1}]{x}{Environment.NewLine}"));
+                    var wordsLimitCollection = result.Count() > 100 ? result.Take(100) : result;
+                    var responseText = string.Concat(wordsLimitCollection.Select(x => $"{result.IndexOf(x) + 1}]{x}{Environment.NewLine}"));
                     await botClient.SendTextMessageAsync(message.Chat, responseText);
                     return;
                 }
