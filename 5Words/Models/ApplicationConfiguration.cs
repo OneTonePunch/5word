@@ -7,6 +7,8 @@ namespace _5Words.Models
         public RunType RunType { get; set; } = RunType.Console;
         public string TelegramBotApiKey { get; set; }
         public string DictionaryFileName { get; set; }
+        public string TemplateChar { get; set; }
+        
         public MessagesConfiguration Messages { get; set; }
 
         public CommandsConfiguration Commands { get; set; }

@@ -53,7 +53,7 @@ namespace _5Words.Utility
 
             try
             {
-                var wstorage = new WordsStorage(session.Params.Length, Program.Configuration.DictionaryFileName);
+                var wstorage = new WordsStorage(session.Params.Length, Program.Configuration.DictionaryFileName, Program.Configuration.TemplateChar.FirstOrDefault());
                 var result = wstorage.Filtrate(session.Params.Filter);
                 if (result == null || result.Count == 0)
                 {
@@ -87,7 +87,7 @@ namespace _5Words.Utility
 
             try
             {
-                var wstorage = new WordsStorage(session.Params.Length, Program.Configuration.DictionaryFileName);
+                var wstorage = new WordsStorage(session.Params.Length, Program.Configuration.DictionaryFileName, Program.Configuration.TemplateChar.FirstOrDefault());
                 var nonRepeatLetters = wstorage.FindNonReapeatingLettersWords();
                 int randomIndex = _random.Next(0, nonRepeatLetters.Count - 1);
                 var result = new List<string> { nonRepeatLetters[randomIndex] };

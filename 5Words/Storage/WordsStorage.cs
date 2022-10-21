@@ -5,12 +5,15 @@ namespace _5Words
 {
     public class WordsStorage
     {
-        public WordsStorage(int charCount, string fileName)
+        public WordsStorage(int charCount, string fileName, char templateParseChar='_')
         {
             CharCount = charCount;
             Storage = FilterWordsLength(charCount, ReadFile());
             FileName = fileName;
+            TemplateParseChar = templateParseChar;
         }
+
+        private char TemplateParseChar { get; set; }
         private int CharCount { get; set; }
         public string FileName { get; set; } = "russian_nouns.txt";
 
@@ -125,7 +128,7 @@ namespace _5Words
 
                 for (int i = 0; i < template.Length; i++)
                 {
-                    if (template[i] != '_')
+                    if (template[i] != TemplateParseChar)
                     {
                         if (template[i] != storageItem[i])
                         {
@@ -159,7 +162,7 @@ namespace _5Words
 
                 for (int i = 0; i < template.Length; i++)
                 {
-                    if (template[i] != '_')
+                    if (template[i] != TemplateParseChar)
                     {
                         if (template[i] == storageItem[i])
                         {

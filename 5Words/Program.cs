@@ -128,7 +128,7 @@ namespace MyApp
         {
             ConsoleUtility.ProgramStart();
             var charCount = ConsoleUtility.GetWordLength();
-            var wstorage = new WordsStorage(charCount, Configuration.DictionaryFileName);
+            var wstorage = new WordsStorage(charCount, Configuration.DictionaryFileName, Configuration.TemplateChar.FirstOrDefault());
 
             var nonRepeatLetters = wstorage.FindNonReapeatingLettersWords();
             ConsoleUtility.StorageInfo(charCount, wstorage.Storage.Count, nonRepeatLetters.Count);
