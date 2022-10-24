@@ -1,7 +1,6 @@
-using _5Words;
 using _5Words.Models;
 
-namespace _5Words
+namespace _5Words.Managers
 {
     internal static class SchedullerManager
     {
@@ -10,8 +9,8 @@ namespace _5Words
         public static void Start()
         {
             var runParams = new Dictionary<string, object>();
-                var scheduleThread = new Thread(Run);
-                scheduleThread.Start(runParams);
+            var scheduleThread = new Thread(Run);
+            scheduleThread.Start(runParams);
         }
 
         private static void Run(object runParams)
@@ -22,9 +21,9 @@ namespace _5Words
 
         public static void ClearState(object state)
         {
-            var clearList = SessionStorage.Storage.Where(x=>x.Value.LastUpdate.AddMinutes(30)<=DateTime.Now);
-            if (clearList!=null&&clearList.Count()>0)
-            {   
+            var clearList = SessionStorage.Storage.Where(x => x.Value.LastUpdate.AddMinutes(30) <= DateTime.Now);
+            if (clearList != null && clearList.Count() > 0)
+            {
                 foreach (var clearItem in clearList)
                 {
                     SessionStorage.Storage.TryRemove(clearItem);
