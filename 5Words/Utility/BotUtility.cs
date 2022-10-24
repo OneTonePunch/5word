@@ -16,11 +16,11 @@ namespace _5Words.Utility
 
         public static async Task SendHi(ITelegramBotClient botClient, Message message)
         {
-            await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.Greeting, ParseMode.Html);
+            await botClient.SendTextMessageAsync(message.Chat, ConfigurationManager.Configuration.Messages.Greeting, ParseMode.Html);
         }
         public static async Task SendHelp(ITelegramBotClient botClient, Message message)
         {
-            await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.Help, ParseMode.Html);
+            await botClient.SendTextMessageAsync(message.Chat, ConfigurationManager.Configuration.Messages.Help, ParseMode.Html);
             return;
         }
 
@@ -29,7 +29,7 @@ namespace _5Words.Utility
             Session session = null;
             if (!SessionStorage.Storage.TryGetValue(chatId, out session)||session.Params.Length<0)
             {
-                await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.CantFindSession);
+                await botClient.SendTextMessageAsync(message.Chat, ConfigurationManager.Configuration.Messages.CantFindSession);
                 return;
             }
                 
@@ -47,7 +47,7 @@ namespace _5Words.Utility
             Session session = null;
             if (!SessionStorage.Storage.TryGetValue(chatId, out session)||session.Params.Length<0)
             {
-                await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.CantRecognize);
+                await botClient.SendTextMessageAsync(message.Chat, ConfigurationManager.Configuration.Messages.CantRecognize);
                 return;
             }
                 
@@ -55,11 +55,11 @@ namespace _5Words.Utility
 
             try
             {
-                var wstorage = new WordsStorage(session.Params.Length, Program.Configuration.DictionaryFileName, Program.Configuration.TemplateChar.FirstOrDefault());
+                var wstorage = new WordsStorage(session.Params.Length, ConfigurationManager.Configuration.DictionaryFileName, ConfigurationManager.Configuration.TemplateChar.FirstOrDefault());
                 var result = wstorage.Filtrate(session.Params.Filter);
                 if (result == null || result.Count == 0)
                 {
-                    await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.CantFind);
+                    await botClient.SendTextMessageAsync(message.Chat, ConfigurationManager.Configuration.Messages.CantFind);
                     return;
                 }
                 else
@@ -72,7 +72,7 @@ namespace _5Words.Utility
             }
             catch (Exception ex)
             {
-                await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.CantRecognize);
+                await botClient.SendTextMessageAsync(message.Chat, ConfigurationManager.Configuration.Messages.CantRecognize);
                 return;
             }
         }
@@ -82,20 +82,20 @@ namespace _5Words.Utility
             Session session = null;
             if (!SessionStorage.Storage.TryGetValue(chatId, out session)||session.Params.Length<0)
             {
-                await botClient.SendTextMessageAsync(message.Chat, $"{EmojiUtility.GetEmojiChar(EmojiType.Disappointed)}{Program.Configuration.Messages.CantRecognize}");
+                await botClient.SendTextMessageAsync(message.Chat, $"{EmojiUtility.GetEmojiChar(EmojiType.Disappointed)}{ConfigurationManager.Configuration.Messages.CantRecognize}");
                 return;
             }
                 
 
             try
             {
-                var wstorage = new WordsStorage(session.Params.Length, Program.Configuration.DictionaryFileName, Program.Configuration.TemplateChar.FirstOrDefault());
+                var wstorage = new WordsStorage(session.Params.Length, ConfigurationManager.Configuration.DictionaryFileName, ConfigurationManager.Configuration.TemplateChar.FirstOrDefault());
                 var nonRepeatLetters = wstorage.FindNonReapeatingLettersWords();
                 int randomIndex = _random.Next(0, nonRepeatLetters.Count - 1);
                 var result = new List<string> { nonRepeatLetters[randomIndex] };
                 if (result == null || result.Count == 0)
                 {
-                    await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.CantFind);
+                    await botClient.SendTextMessageAsync(message.Chat, ConfigurationManager.Configuration.Messages.CantFind);
                     return;
                 }
                 else
@@ -107,14 +107,14 @@ namespace _5Words.Utility
             }
             catch (Exception ex)
             {
-                await botClient.SendTextMessageAsync(message.Chat, $"{EmojiUtility.GetEmojiChar(EmojiType.Disappointed)}{Program.Configuration.Messages.CantRecognize}");
+                await botClient.SendTextMessageAsync(message.Chat, $"{EmojiUtility.GetEmojiChar(EmojiType.Disappointed)}{ConfigurationManager.Configuration.Messages.CantRecognize}");
                 return;
             }
         }
         
         public static async Task SetCommandMenu(ITelegramBotClient bot)
         {
-            var commandsProps = Program.Configuration.Commands.GetType().GetProperties();
+            var commandsProps = ConfigurationManager.Configuration.Commands.GetType().GetProperties();
             var botCommandsMenuCollection = new List<BotCommand> {
                 new BotCommand
                 {
@@ -156,7 +156,7 @@ namespace _5Words.Utility
                 });
             }
 
-            var commandText = Program.Configuration.Commands.GetValueByType(commandType);
+            var commandText = ConfigurationManager.Configuration.Commands.GetValueByType(commandType);
             var valueText = message.Text.ToLower().ReplaceAll(commandText)?.Trim();
             switch (commandType)
             {
@@ -179,7 +179,7 @@ namespace _5Words.Utility
             
             SessionStorage.AddOrUpdate(chatId, session);    
 
-            await botClient.SendTextMessageAsync(message.Chat, $"{EmojiUtility.GetEmojiChar(EmojiType.Grining)}{Program.Configuration.Messages.SessionUpdated}");
+            await botClient.SendTextMessageAsync(message.Chat, $"{EmojiUtility.GetEmojiChar(EmojiType.Grining)}{ConfigurationManager.Configuration.Messages.SessionUpdated}");
         }
     }
 }
