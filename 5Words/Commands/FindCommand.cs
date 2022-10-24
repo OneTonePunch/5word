@@ -6,6 +6,7 @@ using _5Words.Managers;
 
 namespace _5Words.Commands
 {
+    /// <summary>Поиск слов по параметрам в сессии </summary>
     public class FindCommand : IBotCommand
     {
         public async Task Run(ITelegramBotClient botClient, Message message)

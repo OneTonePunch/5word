@@ -6,6 +6,7 @@ using Telegram.Bot.Types;
 
 namespace _5Words.Commands
 {
+    /// <summary>Отправка текущих параметров сессии </summary>
     public class StateInfoCommand : IBotCommand
     {
         public async Task Run(ITelegramBotClient botClient, Message message)

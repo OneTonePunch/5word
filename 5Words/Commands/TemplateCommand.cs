@@ -5,6 +5,7 @@ using Telegram.Bot.Types;
 
 namespace _5Words.Commands
 {
+    /// <summary>Простановка шаблона в параметры сессии </summary>
     public class TemplateCommand : IBotCommand
     {
         public async Task Run(ITelegramBotClient botClient, Message message)

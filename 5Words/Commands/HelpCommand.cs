@@ -6,6 +6,7 @@ using _5Words.Managers;
 
 namespace _5Words.Commands
 {
+    /// <summary>Отправка сообщения помощи по функционалу бота</summary>
     public class HelpCommand : IBotCommand
     {
         public async Task Run(ITelegramBotClient botClient, Message message)

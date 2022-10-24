@@ -7,6 +7,7 @@ using _5Words.Managers;
 
 namespace _5Words.Commands
 {
+    /// <summary>Отправка случайного слова в зависимости от параметра длины слова </summary>
     public class RandomCommand : IBotCommand
     {
         private static Random _random = new Random();

@@ -5,6 +5,7 @@ using Telegram.Bot.Types;
 
 namespace _5Words.Commands
 {
+    /// <summary>Простановка НЕ содержащихся букв в параметры сессии </summary>
     public class NonContainsCommand : IBotCommand
     {
         public async Task Run(ITelegramBotClient botClient, Message message)
