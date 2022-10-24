@@ -11,12 +11,12 @@ namespace _5Words.Commands
     public class RandomCommand : IBotCommand
     {
         private static Random _random = new Random();
-        public async Task Run(ITelegramBotClient botClient, Message message)
+        public async Task Run(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
         {
             Session session = null;
             if (!SessionStorage.Storage.TryGetValue(message.Chat.Id, out session) || session.Params.Length < 0)
             {
-                await botClient.SendTextMessageAsync(message.Chat, $"{EmojiUtility.GetEmojiChar(EmojiType.Disappointed)}{ConfigurationManager.Configuration.Messages.CantRecognize}");
+                await botClient.SendTextMessageAsync(message.Chat, $"{EmojiUtility.GetEmojiChar(EmojiType.Disappointed)}{ConfigurationManager.Configuration.Messages.CantRecognize}", cancellationToken:cancellationToken);
                 return;
             }
 
@@ -29,19 +29,19 @@ namespace _5Words.Commands
                 var result = new List<string> { nonRepeatLetters[randomIndex] };
                 if (result == null || result.Count == 0)
                 {
-                    await botClient.SendTextMessageAsync(message.Chat, ConfigurationManager.Configuration.Messages.CantFind);
+                    await botClient.SendTextMessageAsync(message.Chat, ConfigurationManager.Configuration.Messages.CantFind, cancellationToken:cancellationToken);
                     return;
                 }
                 else
                 {
                     var responseText = string.Concat(result.Select(x => $"{x}{Environment.NewLine}"));
-                    await botClient.SendTextMessageAsync(message.Chat, responseText);
+                    await botClient.SendTextMessageAsync(message.Chat, responseText,cancellationToken:cancellationToken);
                     return;
                 }
             }
             catch (Exception ex)
             {
-                await botClient.SendTextMessageAsync(message.Chat, $"{EmojiUtility.GetEmojiChar(EmojiType.Disappointed)}{ConfigurationManager.Configuration.Messages.CantRecognize}");
+                await botClient.SendTextMessageAsync(message.Chat, $"{EmojiUtility.GetEmojiChar(EmojiType.Disappointed)}{ConfigurationManager.Configuration.Messages.CantRecognize}", cancellationToken:cancellationToken);
                 return;
             }
         }

@@ -18,7 +18,7 @@ namespace _5Words.Utility
                 var message = update.Message;
                 var messageText = message.Text.ToLower();
                 var command = CommandFactory.Create(messageText);
-                await command.Run(botClient, message);
+                await command.Run(botClient, message, cancellationToken);
                 //var chatId = update.Message.Chat.Id;
                 //var userName = update.Message.Chat.Username;
             }

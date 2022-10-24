@@ -9,12 +9,12 @@ namespace _5Words.Commands
     /// <summary>Отправка текущих параметров сессии </summary>
     public class StateInfoCommand : IBotCommand
     {
-        public async Task Run(ITelegramBotClient botClient, Message message)
+        public async Task Run(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
         {
             Session session = null;
             if (!SessionStorage.Storage.TryGetValue(message.Chat.Id, out session) || session.Params.Length < 0)
             {
-                await botClient.SendTextMessageAsync(message.Chat, ConfigurationManager.Configuration.Messages.CantFindSession);
+                await botClient.SendTextMessageAsync(message.Chat, ConfigurationManager.Configuration.Messages.CantFindSession, cancellationToken:cancellationToken);
                 return;
             }
 
@@ -23,7 +23,7 @@ namespace _5Words.Commands
             info += $"Несодержит:{session.Params.Filter.NonContains} \n";
             info += $"Шаблон:{session.Params.Filter.Template} \n";
             info += $"Антишаблон:{session.Params.Filter.AntiTemplate} \n";
-            await botClient.SendTextMessageAsync(message.Chat, info);
+            await botClient.SendTextMessageAsync(message.Chat, info, cancellationToken:cancellationToken);
             return;
         }
     }

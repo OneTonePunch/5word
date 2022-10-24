@@ -10,6 +10,6 @@ namespace _5Words.Commands.Interfaces
 {
     public interface IBotCommand
     {
-        Task Run(ITelegramBotClient botClient, Message message);
+        Task Run(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken);
     }
 }

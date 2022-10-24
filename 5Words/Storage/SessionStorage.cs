@@ -30,7 +30,7 @@ namespace _5Words
             }
         }
 
-        public static async Task UpdateSession(long chatId, ITelegramBotClient botClient, Message message, CommandType commandType)
+        public static async Task UpdateSession(long chatId, ITelegramBotClient botClient, Message message, CommandType commandType, CancellationToken cancellationToken)
         {
             Session session = null;
             if (!Storage.TryGetValue(chatId, out session))
@@ -64,7 +64,7 @@ namespace _5Words
 
             AddOrUpdate(chatId, session);
 
-            await botClient.SendTextMessageAsync(message.Chat, $"{EmojiUtility.GetEmojiChar(EmojiType.Grining)}{ConfigurationManager.Configuration.Messages.SessionUpdated}");
+            await botClient.SendTextMessageAsync(message.Chat, $"{EmojiUtility.GetEmojiChar(EmojiType.Grining)}{ConfigurationManager.Configuration.Messages.SessionUpdated}", cancellationToken:cancellationToken);
         }
     }
 }

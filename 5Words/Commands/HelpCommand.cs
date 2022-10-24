@@ -9,9 +9,9 @@ namespace _5Words.Commands
     /// <summary>Отправка сообщения помощи по функционалу бота</summary>
     public class HelpCommand : IBotCommand
     {
-        public async Task Run(ITelegramBotClient botClient, Message message)
+        public async Task Run(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
         {
-            await botClient.SendTextMessageAsync(message.Chat, ConfigurationManager.Configuration.Messages.Help, ParseMode.Html);
+            await botClient.SendTextMessageAsync(message.Chat, ConfigurationManager.Configuration.Messages.Help, ParseMode.Html, cancellationToken:cancellationToken);
         }
     }
 }
