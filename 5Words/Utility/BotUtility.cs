@@ -1,10 +1,6 @@
 ﻿using Telegram.Bot.Types;
 using Telegram.Bot;
 using _5Words.Models;
-using MyApp;
-using Telegram.Bot.Types.ReplyMarkups;
-using System.Reflection;
-using Newtonsoft.Json;
 using _5Words.Extensions;
 using Telegram.Bot.Types.Enums;
 
@@ -23,7 +19,6 @@ namespace _5Words.Utility
             await botClient.SendTextMessageAsync(message.Chat, ConfigurationManager.Configuration.Messages.Help, ParseMode.Html);
             return;
         }
-
         public static async Task SendInfo(long chatId, ITelegramBotClient botClient, Message message)
         {
             Session session = null;
@@ -41,8 +36,7 @@ namespace _5Words.Utility
             await botClient.SendTextMessageAsync(message.Chat, info);
             return;
         }
-
-        public static async Task Find(long chatId, ITelegramBotClient botClient, Message message)
+        public static async Task SendFind(long chatId, ITelegramBotClient botClient, Message message)
         {
             Session session = null;
             if (!SessionStorage.Storage.TryGetValue(chatId, out session)||session.Params.Length<0)
@@ -76,7 +70,6 @@ namespace _5Words.Utility
                 return;
             }
         }
-
         public static async Task SendRandom(long chatId, ITelegramBotClient botClient, Message message)
         {
             Session session = null;
@@ -111,7 +104,6 @@ namespace _5Words.Utility
                 return;
             }
         }
-        
         public static async Task SetCommandMenu(ITelegramBotClient bot)
         {
             var commandsProps = ConfigurationManager.Configuration.Commands.GetType().GetProperties();
@@ -145,7 +137,7 @@ namespace _5Words.Utility
             
             await bot.SetMyCommandsAsync(botCommandsMenuCollection);
         }
-
+        
         public static async Task UpdateSession(long chatId, ITelegramBotClient botClient, Message message, CommandType commandType)
         {
             Session session = null;

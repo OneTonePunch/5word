@@ -27,9 +27,8 @@ namespace _5Words.Utility
                 }
                 else if (messageText.StartWithAny(ConfigurationManager.Configuration.Commands.Find))
                 {
-                    await BotUtility.Find(chatId, botClient, message);
+                    await BotUtility.SendFind(chatId, botClient, message);
                     return;
-
                 }
                 else if (messageText.StartWithAny(ConfigurationManager.Configuration.Commands.Help))
                 {
@@ -75,12 +74,9 @@ namespace _5Words.Utility
 
             }
         }
-
         public static async Task HandleErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
         {
             Console.WriteLine(JsonConvert.SerializeObject(exception));
         }
-
-
     }
 }
