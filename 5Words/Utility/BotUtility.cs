@@ -5,6 +5,7 @@ using MyApp;
 using Telegram.Bot.Types.ReplyMarkups;
 using System.Reflection;
 using Newtonsoft.Json;
+using _5Words.Extensions;
 
 namespace _5Words.Utility
 {
@@ -134,7 +135,13 @@ namespace _5Words.Utility
                     Command = "/random",
                     Description = "Случайное слово(обязательно должен присутствовать параметр длина)"
                 },
+                 new BotCommand
+                {
+                    Command = "/find",
+                    Description = "Запуск поиска по параметрам"
+                },
             };
+            
             await bot.SetMyCommandsAsync(botCommandsMenuCollection);
         }
 
@@ -149,7 +156,7 @@ namespace _5Words.Utility
             }
 
             var commandText = Program.Configuration.Commands.GetValueByType(commandType);
-            var valueText = message.Text.Replace(commandText,"")?.Trim();
+            var valueText = message.Text.ToLower().ReplaceAll(commandText)?.Trim();
             switch (commandType)
             {
                 case CommandType.Length:
@@ -173,6 +180,5 @@ namespace _5Words.Utility
 
             await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.SessionUpdated);
         }
-
     }
 }

@@ -8,29 +8,29 @@ namespace _5Words.Models
 {
     public class CommandsConfiguration
     {
-        public string Start { get; set; }
+        public List<string> Start { get; set; }
 
-        public string Help { get; set; }
+        public List<string> Help { get; set; }
 
-        public string Random { get; set; }
+        public List<string> Random { get; set; }
 
-        public string Find { get; set; }
+        public List<string> Find { get; set; }
 
-        public string Length { get; set; }
+        public List<string> Length { get; set; }
 
-        public string Contains { get; set; }
+        public List<string> Contains { get; set; }
 
-        public string NonContains { get; set; }
+        public List<string> NonContains { get; set; }
 
-        public string Template { get; set; }
+        public List<string> Template { get; set; }
 
-        public string AntiTemplate { get; set; }
+        public List<string> AntiTemplate { get; set; }
 
-        public string StateInfo { get; set; }
+        public List<string> StateInfo { get; set; }
 
         
 
-        public string GetValueByType(CommandType type)
+        public List<string> GetValueByType(CommandType type)
         {
             switch (type)
             {
