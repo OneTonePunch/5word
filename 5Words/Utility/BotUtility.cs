@@ -6,6 +6,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 using System.Reflection;
 using Newtonsoft.Json;
 using _5Words.Extensions;
+using Telegram.Bot.Types.Enums;
 
 namespace _5Words.Utility
 {
@@ -15,11 +16,11 @@ namespace _5Words.Utility
 
         public static async Task SendHi(ITelegramBotClient botClient, Message message)
         {
-            await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.Greeting);
+            await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.Greeting, ParseMode.Html);
         }
         public static async Task SendHelp(ITelegramBotClient botClient, Message message)
         {
-            await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.Help);
+            await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.Help, ParseMode.Html);
             return;
         }
 
@@ -81,7 +82,7 @@ namespace _5Words.Utility
             Session session = null;
             if (!SessionStorage.Storage.TryGetValue(chatId, out session)||session.Params.Length<0)
             {
-                await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.CantRecognize);
+                await botClient.SendTextMessageAsync(message.Chat, $"{EmojiUtility.GetEmojiChar(EmojiType.Disappointed)}{Program.Configuration.Messages.CantRecognize}");
                 return;
             }
                 
@@ -106,7 +107,7 @@ namespace _5Words.Utility
             }
             catch (Exception ex)
             {
-                await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.CantRecognize);
+                await botClient.SendTextMessageAsync(message.Chat, $"{EmojiUtility.GetEmojiChar(EmojiType.Disappointed)}{Program.Configuration.Messages.CantRecognize}");
                 return;
             }
         }
@@ -178,7 +179,7 @@ namespace _5Words.Utility
             
             SessionStorage.AddOrUpdate(chatId, session);    
 
-            await botClient.SendTextMessageAsync(message.Chat, Program.Configuration.Messages.SessionUpdated);
+            await botClient.SendTextMessageAsync(message.Chat, $"{EmojiUtility.GetEmojiChar(EmojiType.Grining)}{Program.Configuration.Messages.SessionUpdated}");
         }
     }
 }
